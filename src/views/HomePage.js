@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getBitcoinRate } from '../store/actions/bitcoinActions';
 import { getUser } from '../store/actions/userActions';
+import MoveListHome from '../componentes/MoveListHome';
 
 class homePage extends Component {
 
@@ -28,6 +29,7 @@ class homePage extends Component {
                         <h2>Hello {user.name} !</h2>
                         <h2> 💰 Coins: {user.coins}</h2>
                         <h2>Rate from USD: {bitcoin}</h2>
+                        <MoveListHome user={user}></MoveListHome>
                     </div>
                 }
 

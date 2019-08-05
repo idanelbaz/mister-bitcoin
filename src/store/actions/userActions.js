@@ -15,3 +15,13 @@ export const signUp = (username) => {
         return dispatch({ type: types.GET_USER, data: response })
     };
 };
+
+export const transferCoins = (coins,userToTransfer) => {
+    return (dispatch) => {
+        UserService.addMove(coins,userToTransfer)
+        const response = UserService.getUser()
+        return dispatch({ type: types.GET_USER, data: response })
+    };
+};
+
+
