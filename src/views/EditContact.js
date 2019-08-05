@@ -1,37 +1,44 @@
 import React, { Component } from 'react';
-import contactService from '../services/ContactService';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getContactById } from '../store/actions/contactsActions';
+import { deleteContact } from '../store/actions/contactsActions';
+import { editContact } from '../store/actions/contactsActions';
 
-export default class contactDetails extends Component {
+
+
+class editContactDetails extends Component {
     state = {
         contact: {
             name: '', phone: '', email: ''
         },
-
     };
 
     async componentDidMount() {
         const { id } = this.props.match.params;
         if (id) {
-            const contact = await contactService.getContactById(id)
-            this.setState({ contact: contact });
+            const { dispatch } = this.props
+            await dispatch(getContactById(id))
+            this.setState({ contact: this.props.contact })
         }
     }
 
     handleChange = e => {
-      const {value,name}  = e.target;
-        this.setState((state)=>({ contact: { ...state.contact, [name]: value } }));
+        const { value, name } = e.target;
+        this.setState((state) => ({ contact: { ...state.contact, [name]: value } }));
     };
 
     handleSubmit = async e => {
         e.preventDefault();
-        await contactService.saveContact(this.state.contact);
+        const { dispatch } = this.props
+        await dispatch(editContact(this.state.contact))
         const { history } = this.props;
         history.push('/');
     };
 
-    deleteContact = ()=> { 
-        contactService.deleteContact(this.state.contact._id)
+    deleteContact = () => {
+        const { dispatch } = this.props
+        dispatch(deleteContact(this.state.contact._id))
         const { history } = this.props;
         history.push('/');
     }
@@ -66,11 +73,21 @@ export default class contactDetails extends Component {
                     <button>Back</button>
                 </Link>
                 {
-                     contact._id && ( <button onClick={this.deleteContact}>Delete</button>)
+                    contact._id && (<button onClick={this.deleteContact}>Delete</button>)
                 }
-               
-               
+
+
             </div>)
         )
     }
 }
+
+const mapStateToProps = ({ contactsReducer }) => {
+    const { contact } = contactsReducer;
+
+    return {
+        contact
+    }
+}
+
+export default connect(mapStateToProps)(editContactDetails)

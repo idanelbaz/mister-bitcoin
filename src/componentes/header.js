@@ -12,7 +12,7 @@ export default class header extends Component {
     render() {
         return (
             <div className="header">
-                <ul style={{ listStyle: 'none' }}>
+                {/* <ul style={{ listStyle: 'none' }}> */}
                     <NavLink exact to="/">
                         <li>Home</li>
                     </NavLink>
@@ -22,7 +22,7 @@ export default class header extends Component {
                     <NavLink exact to="/contacts">
                         <li>Contacts</li>
                     </NavLink>
-                </ul>
+                {/* </ul> */}
             </div>
         )
 

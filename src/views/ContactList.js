@@ -1,26 +1,28 @@
 import React, { Component } from 'react';
-import contactService from '../services/ContactService';
 import ContactFilter from '../componentes/ContactFilter';
 import ContactPrev from '../componentes/ContactPrev';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getContacts } from '../store/actions/contactsActions'
+import { deleteContact } from '../store/actions/contactsActions'
 
 
 
 
 
-export default class contactList extends Component {
+ class contactList extends Component {
 
-    state = { contacts: [], filterBy: { term: '' } }
+    state = {filterBy: { term: '' } }
 
     async componentDidMount() {
-        const contacts = await contactService.getContacts();
-        this.setState({ contacts })
+        const { dispatch } = this.props
+        dispatch(getContacts()) 
     }
 
     handleChangeTxt = async (event) => {
         this.setState({ filterBy: { term: event.target.value } }, async () => {
-            const filteredContacts = await contactService.getContacts(this.state.filterBy);
-            this.setState((state) => { return { contacts: filteredContacts } })
+            const { dispatch } = this.props
+            dispatch(getContacts(this.state.filterBy)) 
         });
 
     }
@@ -34,15 +36,16 @@ export default class contactList extends Component {
     }
 
     deleteContact =async (currContact) => { 
-      const contacts =  await contactService.deleteContact(currContact._id) 
-      this.setState((state) => { return { contacts: contacts } })
+        const { dispatch } = this.props
+        dispatch(deleteContact(currContact._id))
     }
 
 
 
 
     render() {
-        const { contacts, filterBy } = this.state;
+        const {filterBy } = this.state;
+        const {contacts} = this.props
 
         return (
             <section className="contacts-list">
@@ -63,4 +66,14 @@ export default class contactList extends Component {
     }
 
 }
+
+const mapStateToProps = ({contactsReducer}) => { 
+    const { contacts } = contactsReducer;
+  
+    return {
+     contacts
+    }
+  }
+  
+  export default connect(mapStateToProps)(contactList)
 

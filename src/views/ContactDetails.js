@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import contactService from '../services/ContactService';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getContactById } from '../store/actions/contactsActions';
 
-export default class contactDetails extends Component {
+class contactDetails extends Component {
     state = {
         contact: null
     };
 
     async componentDidMount() {
         const { id } = this.props.match.params;
-        const contact = await contactService.getContactById(id)
-        this.setState({ contact: contact });
+        const { dispatch } = this.props
+        await dispatch(getContactById(id))
+        this.setState({ contact: this.props.contact })
     }
 
 
@@ -32,3 +34,13 @@ export default class contactDetails extends Component {
         )
     }
 }
+
+const mapStateToProps = ({ contactsReducer }) => {
+    const { contact } = contactsReducer;
+
+    return {
+        contact
+    }
+}
+
+export default connect(mapStateToProps)(contactDetails)

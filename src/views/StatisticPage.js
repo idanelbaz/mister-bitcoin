@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
-import BitcoinService from '../services/BitcoinService'
+import { connect } from 'react-redux';
+import { getTransByDay } from '../store/actions/bitcoinActions';
+import { getMarketPrice } from '../store/actions/bitcoinActions';
 
-export default class StatisticPage extends Component {
+class StatisticPage extends Component {
 
-    state = { data: null, transPerDay: null }
+    state = {}
 
     async componentDidMount() {
-        const data = await BitcoinService.getMarketPrice()
-        this.setState({ data: data })
-        const transPerDay = await BitcoinService.getConfirmedTransactions()
-        this.setState({ transPerDay: transPerDay })
+        const { dispatch } = this.props
+         dispatch(getMarketPrice())
+         dispatch(getTransByDay())
     }
 
     render() {
 
-        const { data, transPerDay } = this.state;
+        const { transPerDay, marketPrice } = this.props;
         return (
             <div className="charts">
                 <h2>Market Price (USD) </h2>
                 {
-                    data &&
-                    <Sparklines data={data}>
+                    marketPrice &&
+                    <Sparklines data={marketPrice}>
                         <SparklinesLine color="blue" />
                     </Sparklines>
                 }
@@ -41,3 +42,14 @@ export default class StatisticPage extends Component {
     }
 
 }
+
+const mapStateToProps = ({ bitcoinReducer }) => {
+    const { transPerDay, marketPrice } = bitcoinReducer;
+
+    return {
+        transPerDay,
+        marketPrice
+    }
+}
+
+export default connect(mapStateToProps)(StatisticPage)

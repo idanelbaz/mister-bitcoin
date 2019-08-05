@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
-import UserService from '../services/UserService'
-import BitcoinService from '../services/BitcoinService'
+import { connect } from 'react-redux';
+import { getBitcoinRate } from '../store/actions/bitcoinActions';
+import { getUser } from '../store/actions/userActions';
 
-export default class homePage extends Component {
-
-    state = { user: null, bitcoin: 0 }
+class homePage extends Component {
 
     async componentDidMount() {
-        const user = await UserService.getUser();
-        this.setState({ user: user })
-        const bitcoin = await BitcoinService.getRate(); 
-        this.setState({bitcoin : bitcoin})
+        const { dispatch } = this.props
+        await dispatch(getUser())
+        if (this.props.user === null) {
+            const { history } = this.props;
+            history.push('/signup');
+        }
+        else {
+            dispatch(getBitcoinRate())
+        }
+
     }
 
     render() {
 
-        const { user, bitcoin } = this.state;
+        const { bitcoin, user } = this.props;
         return (
             <div className="home-page">
                 {user &&
@@ -28,7 +33,17 @@ export default class homePage extends Component {
 
             </div>
         )
-
     }
-
 }
+
+const mapStateToProps = ({ bitcoinReducer, userReducer }) => {
+    const { bitcoin } = bitcoinReducer;
+    const { user } = userReducer;
+
+    return {
+        bitcoin,
+        user
+    }
+}
+
+export default connect(mapStateToProps)(homePage)

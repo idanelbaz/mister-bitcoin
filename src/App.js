@@ -5,6 +5,7 @@ import Header from './componentes/header';
 import StatisticPage from './views/StatisticPage';
 import ContactDetails from './views/ContactDetails';
 import EditContact from './views/EditContact';
+import SignUp from './views/SignUp';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -25,6 +26,7 @@ class App extends Component {
                     <Header></Header>
                     <Switch>
                         <Route path="/" exact component={HomePage} />
+                        <Route path="/signup" exact component={SignUp} />
                         <Route path="/statistic" component={StatisticPage} />
                         <Route path="/contacts" component={ContactList} />
                         <Route path="/add" component={EditContact} />
