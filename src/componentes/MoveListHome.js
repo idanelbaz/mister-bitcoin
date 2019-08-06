@@ -12,7 +12,7 @@ export default class moveList extends Component {
                 {
                     user.move.map(move => {
                         counter++;
-                        if (counter >= 3) {
+                        if (counter < 3) {
                             return <div key={move.at}>
                                 <h3>To: {move.to}</h3>
                                 <h3>At: {move.at}</h3>
